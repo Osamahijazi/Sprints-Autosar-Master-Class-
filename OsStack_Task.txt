@@ -1,0 +1,36 @@
+**********************************************
+Activities in StartPreOS Sequence
+**********************************************
+1-Callout EcuM_AL_SetProgrammableInterrupts(optional)
+
+2-Callout EcuM_AL_DriverInitZero(optional)
+
+3-Callout EcuM_DeterminePbConfiguration
+
+4-Check consistency of configuration data
+
+5-Callout EcuM_AL_DriverInitOne(optional)
+
+6-Get reset reason
+
+7-Select default shutdown target
+
+8-Callout EcuM_LoopDetection(optional)
+
+9-Start OS
+
+**********************************************
+Activities in the OffPreOS Sequence
+**********************************************
+1-De-init BSW Mode Manager
+
+2-De-init BSW Scheduler
+
+3-Check for pending wakeup events
+
+4-Set RESET as shutdown target, if wakeup events are pending (default reset mode of EcuMDefaultResetModeRef
+
+5-ShutdownOS
+
+
+
