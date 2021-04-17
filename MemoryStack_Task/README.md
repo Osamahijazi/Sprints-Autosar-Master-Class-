@@ -1,7 +1,7 @@
 # Memory Stack Task
 ## This Sequence for Write All Sequence
 <p align="center">
-  <img width="1000" src="Images/Sequence.png ">
+  <img width="1200" src="Images/Sequence.png ">
 </p>
 
 ## Comments 
