@@ -6,7 +6,7 @@
 
 ## Comments 
 
-* NVM user is ECuM Module 
-* NvM_WriteAll() must be called by EcuM as a step of Activities in the OffPreOS Sequence
-* Job processing (writing NVRAM) is done asynchronously
-* Writing of Block completed Call Job End Notification
+* NVM user is ECuM Module. 
+* NvM_WriteAll() must be called by EcuM as a step of Activities in the OffPreOS Sequence.
+* Job processing (writing NVRAM) is done asynchronously and repeat until writing of block is completed.
+* Writing of Block completed Call Job End Notification.
