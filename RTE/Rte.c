@@ -48,17 +48,16 @@ static PortStateType Global_InclineDataFlagPortState            = IDLE;
 /**************************************************************************/
 /*                         HeightData Port                                */
 /**************************************************************************/
-Std_ReturnType Rte_WriteHeightData (uint8 CtrlData)
+Std_ReturnType Rte_ReadHeightData (uint8 *CtrlData)
 {
 	Std_ReturnType Local_ReturnError = E_OK ;
 	
-            	 /*protection process*/
-	if (Global_HeightDataPortState == IDLE)
+	if ( (Global_HeightDataPortState == IDLE) && (CtrlData != NULL_PTR))
 	{
-		   /* Lock the port to write */
+		/* Lock the port to write */
 		Global_HeightDataPortState = BUSY ;
 		/* Write the data to the port */
-		Global_HeightData = CtrlData ; 
+		 (*CtrlData) = Global_HeightData ; 
 		/* Unlock the port after done writing */
 		Global_HeightDataPortState = IDLE ;
 	}
@@ -71,17 +70,16 @@ Std_ReturnType Rte_WriteHeightData (uint8 CtrlData)
 /**************************************************************************/
 /*                         SlideData Port                                */
 /**************************************************************************/
-Std_ReturnType Rte_WriteSlideData (uint8 CtrlData)
+Std_ReturnType Rte_ReadSlideData (uint8 *CtrlData)
 {
 	Std_ReturnType Local_ReturnError = E_OK ;
 	
-            	 /*protection process*/
-	if (Global_SlideDataPortState == IDLE)
+	if ( (Global_SlideDataPortState == IDLE) && (CtrlData != NULL_PTR))
 	{
-		   /* Lock the port to write */
+		/* Lock the port to write */
 		Global_SlideDataPortState = BUSY ;
 		/* Write the data to the port */
-		Global_SlideData = CtrlData ; 
+		 (*CtrlData) = Global_SlideData ; 
 		/* Unlock the port after done writing */
 		Global_SlideDataPortState = IDLE ;
 	}
@@ -92,29 +90,8 @@ Std_ReturnType Rte_WriteSlideData (uint8 CtrlData)
 	return Local_ReturnError ;
 }
 /**************************************************************************/
-/*                         SlideData Port                                */
+/*                         Incline Data Port                                */
 /**************************************************************************/
-Std_ReturnType Rte_WriteInclineData (uint8 CtrlData)
-{
-	Std_ReturnType Local_ReturnError = E_OK ;
-	
-            	 /*protection process*/
-	if (Global_InclineDataPortState == IDLE)
-	{
-		   /* Lock the port to write */
-		Global_InclineDataPortState = BUSY ;
-		/* Write the data to the port */
-		Global_InclineData = CtrlData ; 
-		/* Unlock the port after done writing */
-		Global_InclineDataPortState = IDLE ;
-	}
-	else
-	{
-		Local_ReturnError = E_NOT_OK ;
-	}
-	return Local_ReturnError ;
-}
-/**************************End Of Function************************/
 Std_ReturnType Rte_ReadSlideData (uint8 *CtrlData)
 {
 	Std_ReturnType Local_ReturnError = E_OK ;
@@ -163,7 +140,7 @@ Std_ReturnType Rte_ReadHeightBtnState (Srlf_SeatControlBtns *BtnState)
 {
 	Std_ReturnType Local_ReturnError = E_OK ;
 	
-	if ( (Global_InclineDataPortState == IDLE) && (BtnState != NULL_PTR))
+	if ( (Global_HeightBtnstatePortState == IDLE) && (BtnState != NULL_PTR))
 	{
 		/* Lock the port to write */
 		Global_HeightBtnstatePortState = BUSY ;
@@ -409,9 +386,6 @@ Std_ReturnType Rte_ReadInclineCtrlDataUpdateflag  (Flag_Update *CtrlDataFalg)
 	return Local_ReturnError ;
 }
 /**************************************************************************/
-
-
-
 
 
 		
