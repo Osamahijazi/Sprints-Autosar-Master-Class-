@@ -27,8 +27,23 @@ void HeightMotor_Move (SepMotorStepType Step)
 	Std_ReturnType status;
 
 	/* Server Call Points */
-	status = Rte_Call_rpSetHeightMotor_IoSetHeightForward();
+	if(Step == MOTOR_STEP_MINUS)
+	{
+		
 	status = Rte_Call_rpSetHeightMotor_IoSetHeightReverse();
+
+	{
+		
+    else if (Step == MOTOR_STEP_PLUS) 
+	{
+	status = Rte_Call_rpSetHeightMotor_IoSetHeightForward();
+	}
+	
+	else
+	{
+	           /* wrong input by client operation*/	
+	}
+	
 	
 }
 
