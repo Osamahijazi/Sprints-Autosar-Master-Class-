@@ -4,7 +4,7 @@
  * \brief Rte Component Template for AUTOSAR SWC: HMI
  *
  * \author Sprints AUTOSAR Authoring Tool (SAAT) v1.0.2
- * Generated on 5/15/2021 10:47 م
+ * Generated on 5/16/2021 08:16 م
  *
  * For any inquiries: hassan.m.farahat@gmail.com
  *
@@ -12,6 +12,25 @@
 
 #include "Rte_HMI.h"
 
+static SeatControlBtnImpType btnValueToState(uint8 value)
+{
+	SeatControlBtnImpType btnState;
+
+	if (value == 1)
+	{
+		btnState = MULTI_STATE_BTN_MINUS;
+	}
+	else if (value == 2)
+	{
+		btnState = MULTI_STATE_BTN_PLUS;
+	}
+	else
+	{
+		btnState = MULTI_STATE_BTN_INIT;
+	}
+
+	return btnState;
+}
 
 /**
  *
@@ -21,132 +40,73 @@
  *  - TimingEventImpl.TE_HMI_MainFunction_100ms
  *
  */
-  
 
-void HMI_MainFunction (void)
+void HMI_MainFunction(void)
 {
-	
 	Std_ReturnType status;
-	/*Buttons provides States*/
 	SeatControlBtnImpType HeightBtnState;
 	SeatControlBtnImpType InclineBtnState;
 	SeatControlBtnImpType SlideBtnState;
-    /*Ctrl Data recieved States*/
 	SeatControlDataImpType HeightCtrlData;
 	SeatControlDataImpType InclineCtrlData;
 	SeatControlDataImpType SlideCtrlData;
-	                             /* Data Receive Points */
-                            /*************Read height data********************* */
+	boolean IsUpdated;
+
+	IsUpdated = Rte_IsUpdated_rpSeatCtrlData_Height();
 	status = Rte_Read_rpSeatControlData_HeightCtrlData(&HeightCtrlData);
-       /* Check if there is an error during read operation */
-		if (E_OK == status)
-		{                 /*check for 3 conditions Time , update and Value*/
-			if( TIME_OUT || (UPDATE) || ( HeightCtrlData == 0) )
-			{ 
-			                /*init button state*/
-			HeightBtnState = MULTI_STATE_BTN_INIT ;			
-			status = Rte_Write_ppSeatControlBtnState_HeightBtnState(HeightBtnState);
-			        
-			}
-			else if(  HeightCtrlData == 1 )
-			{ 
-			            /*minus button state*/
-			HeightBtnState = MULTI_STATE_BTN_MINUS ;									
-			status = Rte_Write_ppSeatControlBtnState_HeightBtnState(HeightBtnState);	
-			     
-			}
-			else if( HeightCtrlData == 2 )
-			{ 
-			            /*plus button state*/
-			HeightBtnState = MULTI_STATE_BTN_PLUS ;															
-			status = Rte_Write_ppSeatControlBtnState_HeightBtnState(HeightBtnState);	
-			      
-			}
-			else
-			{	
-				/*wrong read data you shouldnt be here*/
-			}
-					
-	    }
-		else
-		{
-			
-			/*Error during read operation*/
-		}   
-		
-		               /*************Read Incline data ******************/
+	if (status == RTE_E_OK && IsUpdated == TRUE)
+	{
+
+		HeightBtnState = btnValueToState(HeightCtrlData);
+		(void)Rte_Write_ppSeatControlBtnState_HeightBtnState(HeightBtnState);
+	}
+
+	IsUpdated = Rte_IsUpdated_rpSeatCtrlData_Incline();
 	status = Rte_Read_rpSeatControlData_InclineCtrlData(&InclineCtrlData);
-             /* Check if there is an error during read operation */
-		if (E_OK == status)
-		{                  /*check for 3 conditions Time , update and Value*/
-			if( TIME_OUT || ( UPDATE ) || (InclineCtrlData == 0) )
-			{ 
-			            /*init button state*/
-			InclineCtrlData = MULTI_STATE_BTN_INIT ;			
-			status = Rte_Write_ppSeatControlBtnState_InclineBtnState(InclineCtrlData);	
-			           
-			}
-			else if(InclineCtrlData == 1 )
-			{ 
-			            /*minus button state*/
-			InclineCtrlData = MULTI_STATE_BTN_MINUS ;									
-			status = Rte_Write_ppSeatControlBtnState_InclineBtnState(InclineCtrlData);	
-			       
-			}
-			else if( Global_NewSlideData == 2 )
-			{ 
-			            /*plus button state*/
-			InclineCtrlData = MULTI_STATE_BTN_PLUS ;															
-			status = Rte_Write_ppSeatControlBtnState_InclineBtnState(InclineCtrlData);	
-			      
-			}
-			else
-			{	
-				/*wrong read data you shouldnt be here*/
-			}
-					
-	    }
-		else
+	if (status == RTE_E_OK && IsUpdated == TRUE)
+	{
+		InclineBtnState = btnValueToState(InclineCtrlData);
+		(void)Rte_Write_ppSeatControlBtnState_InclineBtnState(InclineBtnState);
+	}
+
+	IsUpdated = Rte_IsUpdated_rpSeatCtrlData_Slide();
+	status = Rte_Read_rpSeatControlData_SlideCtrlData(&SlideCtrlData);
+	if (status == RTE_E_OK && IsUpdated == TRUE)
+	{
+		SlideBtnState = btnValueToState(SlideCtrlData);
+		(void)Rte_Write_ppSeatControlBtnState_SlideBtnState(SlideBtnState);
+	}
+
+	/**
+ *
+ * Runnable HMI_SeatModeChanged
+ *
+ * Triggered By:
+ *  - DataReceivedEventImpl.DRE_rpSeatModeBtn_SeatModeBtn
+ *
+ */
+
+	void HMI_SeatModeChanged(void)
+	{
+		SeatModeBtnType SeatModeBtn;
+		uint8 SeatCtrlMode = RTE_MODE_SeatCtrlMode_INIT;
+
+		(void)Rte_Read_rpSeatModeBtn_SeatModeBtn(&SeatModeBtn);
+
+              /*specify mode*/
+			  
+		if (SeatModeBtn == SEAT_MODE_BTN_MANUAL)
 		{
-			
-			/*Error during read operation*/
+			SeatCtrlMode = RTE_MODE_SeatCtrlMode_MANUAL;
 		}
-         
-                          /**********Read slide data ************/
-        status = Rte_Read_rpSeatControlData_SlideCtrlData(&SlideCtrlData) ;
-             /* Check if there is an error during read operation */
-		if (E_OK == status)
-		{                  /*check for 3 conditions Time , update and Value*/
-			if( TIME_OUT || ( UPDATE ) || ( SlideCtrlData == 0) )
-			{ 
-			            /*init button state*/
-			SlideCtrlData = MULTI_STATE_BTN_INIT ;			
-			status = Rte_Write_ppSeatControlBtnState_SlideBtnState(SlideCtrlData);	
-			           
-			}
-			else if(  SlideCtrlData == 1 )
-			{ 
-			            /*minus button state*/
-			SlideCtrlData = MULTI_STATE_BTN_MINUS ;									
-			status = Rte_Write_ppSeatControlBtnState_SlideBtnState(SlideCtrlData);
-			       
-			}
-			else if( SlideCtrlData == 2 )
-			{ 
-			            /*plus button state*/
-			SlideCtrlData = MULTI_STATE_BTN_PLUS ;															
-			status = Rte_Write_ppSeatControlBtnState_SlideBtnState(SlideCtrlData);	
-			       
-			}
-			else
-			{	
-				/*wrong read data you shouldnt be here*/
-			}
-					
-	    }
+		else if (SeatModeBtn == SEAT_MODE_BTN_AUTO)
+		{
+			SeatCtrlMode = RTE_MODE_SeatCtrlMode_AUTO;
+		}
 		else
 		{
-			
-			/*Error during read operation*/
-		} 		
-}
+			/* Save Init Mode */
+		}
+
+		(void)Rte_Switch_ppSeatCtrlMode_SeatCtrlMode(SeatCtrlMode);
+	}
